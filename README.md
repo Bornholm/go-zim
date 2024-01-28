@@ -4,6 +4,8 @@
 
 A Golang library to read and serve [ZIM](https://wiki.openzim.org/wiki/OpenZIM) archives.
 
+Inspired by [`github.com/tim-st/go-zim`](https://pkg.go.dev/github.com/tim-st/go-zim).
+
 ## Usage
 
 ### Reading a ZIM file
