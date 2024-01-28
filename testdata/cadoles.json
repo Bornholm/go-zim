@@ -1,0 +1,22 @@
+{
+    "uuid": "cf81f094-d802-c790-b854-c74ad9701ddb",
+    "entryCount": 271,
+    "entries": [
+        {
+            "namespace": "C",
+            "url": "blog/202206-ShowroomInnovation.jpg",
+            "compression": 1,
+            "size": 260260,
+            "mimeType": "image/jpeg",
+            "title": "blog/202206-ShowroomInnovation.jpg"
+        },
+        {
+            "namespace": "C",
+            "url": "team/index.html",
+            "compression": 5,
+            "size": 93185,
+            "mimeType": "text/html",
+            "title": "Cadoles - Notre équipe"
+        }
+    ]
+}
