@@ -21,26 +21,26 @@ import (
 )
 
 func main() {
-	archive, err := zim.Open("my-archive.zim")
+	reader, err := zim.Open("my-archive.zim")
 	if err != nil {
 		panic(err)
 	}
 
 	defer func() {
-        if err := archive.Close(); err != nil {
-            panic(err)
-        }
-    }()
+		if err := reader.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
-    fmt.Println("Entries count:", archive.EntryCount())
-    
-    mainPage, err := archive.MainPage()
-    if err != nil {
-        panic(err)
-    }
+	fmt.Println("Entries count:", reader.EntryCount())
 
-    fmt.Println("Main Page Title:", mainPage.Title())
-    fmt.Println("Main Page Full URL:", mainPage.FullURL())
+	mainPage, err := reader.MainPage()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Main Page Title:", mainPage.Title())
+	fmt.Println("Main Page Full URL:", mainPage.FullURL())
 }
 ```
 
@@ -63,7 +63,13 @@ func main() {
 		panic(err)
 	}
 
-	fs := zimFS.NewFS(reader)
+	defer func() {
+		if err := reader.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	fs := zimFS.New(reader)
 	fileServer := http.FileServer(http.FS(fs))
 
 	if err := http.ListenAndServe(":8080", fileServer); err != nil {

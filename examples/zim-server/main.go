@@ -26,7 +26,13 @@ func main() {
 		panic(err)
 	}
 
-	fs := zimFS.NewFS(reader)
+	defer func() {
+		if err := reader.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	fs := zimFS.New(reader)
 	fileServer := http.FileServer(http.FS(fs))
 
 	if err := http.ListenAndServe(httpAddr, fileServer); err != nil {

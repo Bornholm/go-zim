@@ -150,7 +150,7 @@ func (fs *FS) searchEntryFromURL(url string) (zim.Entry, error) {
 	return entry, nil
 }
 
-func NewFS(reader *zim.Reader) *FS {
+func New(reader *zim.Reader) *FS {
 	return &FS{reader}
 }
 
