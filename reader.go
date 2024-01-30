@@ -38,7 +38,7 @@ type Reader struct {
 	cache *lru.Cache[string, Entry]
 	urls  map[string]int
 
-	rangeReader RangeReadCloser
+	reader ReadAtCloser
 }
 
 func (r *Reader) Version() (majorVersion, minorVersion uint16) {
@@ -58,7 +58,7 @@ func (r *Reader) UUID() string {
 }
 
 func (r *Reader) Close() error {
-	if err := r.rangeReader.Close(); err != nil {
+	if err := r.reader.Close(); err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -458,7 +458,7 @@ func (r *Reader) preload() error {
 }
 
 func (r *Reader) readRange(offset int64, v []byte) error {
-	read, err := r.rangeReader.ReadAt(v, offset)
+	read, err := r.reader.ReadAt(v, offset)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -514,12 +514,12 @@ func (r *Reader) readStringsAt(offset int64, count int, bufferSize int) ([]strin
 	}
 }
 
-type RangeReadCloser interface {
+type ReadAtCloser interface {
 	io.Closer
 	ReadAt(data []byte, offset int64) (n int, err error)
 }
 
-func NewReader(rangeReader RangeReadCloser, funcs ...OptionFunc) (*Reader, error) {
+func NewReader(r ReadAtCloser, funcs ...OptionFunc) (*Reader, error) {
 	opts := NewOptions(funcs...)
 
 	cache, err := lru.New[string, Entry](opts.CacheSize)
@@ -528,8 +528,8 @@ func NewReader(rangeReader RangeReadCloser, funcs ...OptionFunc) (*Reader, error
 	}
 
 	reader := &Reader{
-		rangeReader: rangeReader,
-		cache:       cache,
+		reader: r,
+		cache:  cache,
 	}
 
 	if err := reader.parse(); err != nil {
